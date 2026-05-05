@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProjectPulse – Team & Pipeline Health Monitor</title>
+  <meta name="description" content="Interactive project and pipeline monitoring dashboard for team health, risk detection, and release readiness." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ── Header ── -->
+  <header class="app-header">
+    <div class="app-logo">📊</div>
+    <div>
+      <div class="app-title">ProjectPulse</div>
+      <div class="app-subtitle">Team &amp; Pipeline Health Monitor</div>
+    </div>
+    <div class="live-badge"><div class="live-dot"></div> Live Monitor</div>
+  </header>
+
+  <!-- ── Controls ── -->
+  <div class="controls-bar">
+
+    <!-- Filters -->
+    <div class="ctrl-group">
+      <span class="ctrl-label">Role:</span>
+      <select id="filter-role">
+        <option value="All">All Roles</option>
+        <option value="Project Manager">Project Manager</option>
+        <option value="Lead Developer">Lead Developer</option>
+        <option value="QA/Tester">QA/Tester</option>
+        <option value="UX/UI Designer">UX/UI Designer</option>
+        <option value="Risk Manager">Risk Manager</option>
+        <option value="Operations Lead">Operations Lead</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">Status:</span>
+      <select id="filter-status">
+        <option value="All">All Status</option>
+        <option value="done">Done</option>
+        <option value="in-progress">In Progress</option>
+        <option value="delayed">Delayed</option>
+        <option value="blocked">Blocked</option>
+      </select>
+    </div>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">Risk:</span>
+      <select id="filter-risk">
+        <option value="All">All Risks</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+    </div>
+
+    <!-- Scenario Buttons -->
+    <button id="btn-simulate-fail" class="btn-danger">🚨 Simulate Failure</button>
+    <button id="btn-simulate-ok"   class="btn-success">✅ Simulate Recovery</button>
+    <button id="btn-refresh">↻ Refresh</button>
+    <button id="btn-reset">Reset All</button>
+
+    <div class="ctrl-group">
+      <span class="ctrl-label">Mode:</span>
+      <select id="mode-switch">
+        <option value="default">Default</option>
+        <option value="failure">Failure</option>
+        <option value="healthy">Healthy</option>
+      </select>
+    </div>
+
+    <!-- View Tabs -->
+    <div class="view-tabs" style="margin-left:auto">
+      <button class="view-tab active" data-view="overview">Overview</button>
+      <button class="view-tab" data-view="analytics">Analytics</button>
+      <button class="view-tab" data-view="risks">Risks</button>
+      <button class="view-tab" data-view="logs">🖥️ Technical</button>
+      <button class="view-tab" data-view="management">📁 Management</button>
+    </div>
+
+  </div><!-- /controls-bar -->
+
+  <!-- ── App Body ── -->
+  <div class="app-body">
+
+    <!-- Main Content -->
+    <div class="main-content" id="main-view">
+      <!-- Rendered by logic.js -->
+    </div>
+
+    <!-- Side Panel -->
+    <aside class="side-panel">
+
+      <!-- Task Inspection -->
+      <div id="inspection-panel">
+        <!-- Rendered by logic.js -->
+      </div>
+
+      <!-- Why This System Matters -->
+      <div class="why-card">
+        <div class="card-hdr">💡 Why This System Matters</div>
+        <div class="why-item">
+          <strong>The Problem</strong>
+          <span>Teams lack unified visibility into project health. Blockers are discovered too late.</span>
+        </div>
+        <div class="why-item">
+          <strong>The Solution</strong>
+          <span>A centralized, role-aware monitor connecting task management with technical pipeline data.</span>
+        </div>
+        <div class="why-item">
+          <strong>The Impact</strong>
+          <span>Earlier risk detection, release-gate enforcement, and data-driven decision making.</span>
+        </div>
+      </div>
+
+    </aside>
+  </div><!-- /app-body -->
+
+</div><!-- /app-shell -->
+
+<!-- Scripts: load order matters (data → charts → management → logic) -->
+<script src="js/data.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/management.js"></script>
+<script src="js/logic.js"></script>
+</body>
+</html>

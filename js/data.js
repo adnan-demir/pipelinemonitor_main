@@ -1,0 +1,191 @@
+/* ═══════════════════════════════════════════════
+   DATA LAYER — ProjectPulse
+   All mock data definitions live here.
+   ═══════════════════════════════════════════════ */
+
+const DB = {
+
+  /* ── Team ── */
+  team: [
+    { id: "ali",    name: "Ali Yılmaz",    role: "Project Manager",  avatar: "AY", color: "#388bfd" },
+    { id: "mert",   name: "Mert Demir",    role: "Lead Developer",   avatar: "MD", color: "#2ea043" },
+    { id: "elif",   name: "Elif Şahin",    role: "QA/Tester",        avatar: "EŞ", color: "#d29922" },
+    { id: "ayse",   name: "Ayşe Kaya",     role: "UX/UI Designer",   avatar: "AK", color: "#8957e5" },
+    { id: "zeynep", name: "Zeynep Arslan", role: "Risk Manager",     avatar: "ZA", color: "#da3633" },
+    { id: "can",    name: "Can Öztürk",    role: "Operations Lead",  avatar: "CÖ", color: "#0e7490" },
+  ],
+
+  /* ── Tasks ── */
+  tasks: [
+    { id: 1,  name: "Login API",           assigneeId: "mert",   role: "Lead Developer",  status: "done",        module: "Backend",    commit: "a1b2c3d", testPass: 100, risk: "Low",    effort: 3, updated: "2d ago" },
+    { id: 2,  name: "Dashboard UI",        assigneeId: "ayse",   role: "UX/UI Designer",  status: "delayed",     module: "Frontend",   commit: "-",       testPass: 0,   risk: "High",   effort: 5, updated: "1h ago" },
+    { id: 3,  name: "E2E Test Suite",      assigneeId: "elif",   role: "QA/Tester",       status: "in-progress", module: "QA",         commit: "d4e5f6g", testPass: 76,  risk: "Medium", effort: 4, updated: "3h ago" },
+    { id: 4,  name: "CI/CD Pipeline",      assigneeId: "can",    role: "Operations Lead", status: "done",        module: "DevOps",     commit: "h7i8j9k", testPass: 100, risk: "Low",    effort: 3, updated: "1d ago" },
+    { id: 5,  name: "Sprint 3 Planning",   assigneeId: "ali",    role: "Project Manager", status: "done",        module: "Management", commit: "-",       testPass: 100, risk: "Low",    effort: 2, updated: "2d ago" },
+    { id: 6,  name: "Security Audit",      assigneeId: "zeynep", role: "Risk Manager",    status: "delayed",     module: "Security",   commit: "-",       testPass: 0,   risk: "High",   effort: 5, updated: "4h ago" },
+    { id: 7,  name: "Auth Component",      assigneeId: "ayse",   role: "UX/UI Designer",  status: "blocked",     module: "Frontend",   commit: "pending", testPass: 50,  risk: "High",   effort: 4, updated: "2h ago" },
+    { id: 8,  name: "DB Schema Migration", assigneeId: "mert",   role: "Lead Developer",  status: "in-progress", module: "Backend",    commit: "j1k2l3m", testPass: 60,  risk: "Medium", effort: 4, updated: "5h ago" },
+    { id: 9,  name: "Load Testing",        assigneeId: "elif",   role: "QA/Tester",       status: "in-progress", module: "QA",         commit: "n4o5p6q", testPass: 88,  risk: "Low",    effort: 3, updated: "1d ago" },
+    { id: 10, name: "Uptime Monitoring",   assigneeId: "can",    role: "Operations Lead", status: "done",        module: "DevOps",     commit: "r7s8t9u", testPass: 100, risk: "Low",    effort: 2, updated: "1d ago" },
+  ],
+
+  /* ── Pipeline ── */
+  pipeline: {
+    build: "failed",
+    lastBuildTime: "10:42 AM",
+    tests: 80,
+    coverage: 76,
+    uptime: 99.2,
+    responseTime: 430,
+    errorRate: 2.1,
+    deploys: 2,
+    branch: "feature/pulse-interactive",
+    commit: "a1b2c3d",
+    mergeStatus: "pending",
+    sprintProgress: 57,
+  },
+
+  /* ── Risks (with probability & impact) ── */
+  risks: [
+    { id: 1, title: "Build Pipeline Failure",        severity: "Critical", category: "Technical",  status: "Open",     probability: "High",   impact: "Critical", mitigation: "Fix failing unit tests in auth module. Rerun CI.",         owner: "can"    },
+    { id: 2, title: "Dashboard Delivery Delay",      severity: "High",     category: "Schedule",   status: "Open",     probability: "Medium", impact: "High",     mitigation: "Reassign 1 frontend task to Mert as overflow support.",    owner: "ali"    },
+    { id: 3, title: "Security Audit Incomplete",     severity: "High",     category: "Compliance", status: "Open",     probability: "High",   impact: "High",     mitigation: "Block release until audit is cleared by Zeynep.",         owner: "zeynep" },
+    { id: 4, title: "Test Coverage Below Threshold", severity: "Medium",   category: "Quality",    status: "Watching", probability: "Medium", impact: "Medium",   mitigation: "Elif to add 15 new test cases for auth and payment flows.", owner: "elif"   },
+  ],
+
+  /* ── Metrics ── */
+  metrics: {
+    pm:   { sprintProgress: 57, delayedTasks: 2, velocity: 18, burndownDelta: -4 },
+    dev:  { commits: 34, linesChanged: 2841, openPRs: 3, mergedToday: 1 },
+    qa:   { testPassRate: 80, coverage: 76, failedTests: 12, bugsDeploy: 2 },
+    ux:   { usabilityScore: 92, clarityScore: 88, accessibilityScore: 79, clickDepth: 2.4 },
+    ops:  { uptime: 99.2, responseTime: 430, errorRate: 2.1, deployFrequency: "2/wk" },
+    risk: { openRisks: 3, criticalRisks: 1, mitigatedThisWeek: 1, riskScore: 74 },
+  },
+
+  /* ── Budget & Cost ── */
+  budget: {
+    total: 50000,
+    spent: 32500,
+    currency: "USD",
+    breakdown: [
+      { category: "Development",    allocated: 20000, spent: 15000 },
+      { category: "QA & Testing",   allocated: 8000,  spent: 5500  },
+      { category: "Infrastructure", allocated: 10000, spent: 7200  },
+      { category: "Design",         allocated: 6000,  spent: 4800  },
+      { category: "Management",     allocated: 6000,  spent: 0     },
+    ],
+  },
+
+  /* ── Milestones ── */
+  milestones: [
+    { id: "m1", name: "Requirements Finalized",   date: "2026-03-15", status: "completed",   deliverable: "SRS Document"       },
+    { id: "m2", name: "UI Design Complete",        date: "2026-04-20", status: "completed",   deliverable: "Figma Mockups"       },
+    { id: "m3", name: "Core Backend Done",         date: "2026-04-30", status: "completed",   deliverable: "API v1.0"            },
+    { id: "m4", name: "Integration & QA Testing", date: "2026-05-08", status: "in-progress", deliverable: "QA Report"           },
+    { id: "m5", name: "Security Audit Cleared",    date: "2026-05-12", status: "at-risk",     deliverable: "Audit Certificate"   },
+    { id: "m6", name: "Final Presentation",        date: "2026-05-20", status: "upcoming",    deliverable: "Live Demo & Report"  },
+  ],
+
+  /* ── Stakeholders ── */
+  stakeholders: [
+    { id: "s1", name: "Prof. Dr. A. Yıldız", role: "Course Instructor",  interest: "High",   influence: "High",   expectations: "On-time delivery, full feature set",     commFreq: "Weekly",    concerns: "Scope creep, missed deadlines"   },
+    { id: "s2", name: "Technical Reviewer",  role: "Academic Evaluator", interest: "High",   influence: "High",   expectations: "Clean code, test coverage ≥ 80%",         commFreq: "Bi-weekly", concerns: "Technical debt, test gaps"       },
+    { id: "s3", name: "Ali Yılmaz (PM)",      role: "Project Manager",    interest: "High",   influence: "High",   expectations: "Sprint on schedule, risks managed",       commFreq: "Daily",     concerns: "Delayed tasks, resource overload" },
+    { id: "s4", name: "Dev & QA Team",        role: "Core Developers",    interest: "Medium", influence: "Medium", expectations: "Clear requirements, unblocked pipeline",  commFreq: "Daily",     concerns: "Unclear specs, blocked PRs"     },
+    { id: "s5", name: "Ayşe Kaya (UX)",       role: "UX/UI Designer",     interest: "Medium", influence: "Low",    expectations: "Design approval before development",      commFreq: "As-needed", concerns: "Late feedback, accessibility"    },
+    { id: "s6", name: "Can Öztürk (Ops)",     role: "Operations Lead",    interest: "Medium", influence: "Medium", expectations: "Stable infra, <1% downtime SLA",         commFreq: "Weekly",    concerns: "Deploy failures, high error rate" },
+  ],
+
+  /* ── Incidents ── */
+  incidents: [
+    { id: "i1", time: "10:45 AM",  title: "CI Build #47 Failed",          severity: "Critical", service: "CI/CD",    status: "Open",     duration: "45min+", impact: "All deployments blocked"             },
+    { id: "i2", time: "10:30 AM",  title: "API Response Time Spike",       severity: "High",     service: "API-GW",   status: "Watching", duration: "15min",  impact: "Dashboard latency >1200ms"            },
+    { id: "i3", time: "08:55 AM",  title: "Security Scan Incomplete",      severity: "High",     service: "Security", status: "Open",     duration: "N/A",    impact: "14 open findings, release blocked"    },
+    { id: "i4", time: "Yesterday", title: "Staging Deploy v0.8.1 Failed",  severity: "Medium",   service: "Deploy",   status: "Resolved", duration: "30min",  impact: "Staging environment down temporarily" },
+    { id: "i5", time: "2d ago",    title: "DB Connection Pool Exhausted",  severity: "Medium",   service: "Database", status: "Resolved", duration: "10min",  impact: "API timeouts on /api/users"           },
+  ],
+
+  /* ── Performance Trend (last 8 checkpoints) ── */
+  perfTrend: [
+    { time: "06:00", responseTime: 145,  errorRate: 0.2 },
+    { time: "07:00", responseTime: 180,  errorRate: 0.3 },
+    { time: "08:00", responseTime: 220,  errorRate: 0.5 },
+    { time: "09:00", responseTime: 350,  errorRate: 1.2 },
+    { time: "10:00", responseTime: 580,  errorRate: 3.5 },
+    { time: "10:30", responseTime: 1240, errorRate: 8.7 },
+    { time: "11:00", responseTime: 890,  errorRate: 5.1 },
+    { time: "Now",   responseTime: 430,  errorRate: 2.1 },
+  ],
+
+  /* ── Activity Log ── */
+  activities: [
+    { id: 101, time: "11:30 AM",  text: "Dashboard UI marked as delayed by Ayşe",          type: "warning" },
+    { id: 102, time: "10:45 AM",  text: "CI Build #47 Failed — auth.test.js errors",        type: "error"   },
+    { id: 103, time: "10:20 AM",  text: "E2E test suite executed (coverage: 76%)",           type: "info"    },
+    { id: 104, time: "10:00 AM",  text: "Mert completed Login API — commit a1b2c3d merged", type: "success" },
+    { id: 105, time: "09:45 AM",  text: "Zeynep flagged Security Audit as High Risk",        type: "warning" },
+    { id: 106, time: "09:00 AM",  text: "Can deployed v0.8.2 to staging environment",        type: "success" },
+    { id: 107, time: "Yesterday", text: "Sprint 3 scope finalized by Ali",                  type: "info"    },
+  ],
+
+  /* ── System Logs ── */
+  logs: [
+    { level: "ERROR", time: "10:45:03", service: "CI/CD",   message: "Build #47 failed: 3 tests failing in auth.test.js" },
+    { level: "WARN",  time: "10:30:11", service: "API-GW",  message: "Response time spike: 1240ms on /api/dashboard" },
+    { level: "INFO",  time: "10:00:22", service: "Git",      message: "Commit a1b2c3d merged to main by mert" },
+    { level: "INFO",  time: "09:00:14", service: "Deploy",   message: "v0.8.2 deployed to staging successfully" },
+    { level: "WARN",  time: "08:55:30", service: "Security", message: "Audit scan incomplete: 14 open findings" },
+  ],
+
+  /* ── Burnup Chart Data ── */
+  burnup: [
+    { week: "W1", planned: 10, actual: 8  },
+    { week: "W2", planned: 20, actual: 17 },
+    { week: "W3", planned: 30, actual: 27 },
+    { week: "W4", planned: 40, actual: 35 },
+    { week: "W5", planned: 48, actual: 40 },
+  ],
+
+  /* ── Management Tasks (Deliverables) ── */
+  managementTasks: [
+    { id: "mt1", name: "UI Design",                    ownerId: "ayse",   ownerRole: "UI/UX Designer / Stakeholder Manager",  status: "completed",   progress: 100, deadline: "2026-04-20", priority: "high"   },
+    { id: "mt2", name: "Technical Monitoring Module",  ownerId: "mert",   ownerRole: "Lead Developer / Technical Monitoring", status: "completed",   progress: 100, deadline: "2026-04-30", priority: "high"   },
+    { id: "mt3", name: "Management Monitoring Module", ownerId: "ali",    ownerRole: "Project Manager / Risk Manager",        status: "in-progress", progress: 65,  deadline: "2026-05-10", priority: "high"   },
+    { id: "mt4", name: "Risk Register",                ownerId: "zeynep", ownerRole: "Project Manager / Risk Manager",        status: "completed",   progress: 100, deadline: "2026-04-15", priority: "medium" },
+    { id: "mt5", name: "Testing & QA",                 ownerId: "elif",   ownerRole: "QA Tester / Operations Lead",           status: "in-progress", progress: 45,  deadline: "2026-05-08", priority: "high"   },
+    { id: "mt6", name: "Final Presentation",           ownerId: "ali",    ownerRole: "Project Manager / Risk Manager",        status: "not-started", progress: 10,  deadline: "2026-05-20", priority: "medium" },
+  ],
+};
+
+/* ── Scenario Modes ── */
+const SCENARIOS = {
+  healthy: {
+    pipeline:  { build: "success", tests: 98, coverage: 91, uptime: 99.9, responseTime: 145, errorRate: 0.1 },
+    taskOverrides: [],
+    perfTrend: [
+      { time: "06:00", responseTime: 120, errorRate: 0.1 },
+      { time: "07:00", responseTime: 130, errorRate: 0.1 },
+      { time: "08:00", responseTime: 140, errorRate: 0.1 },
+      { time: "09:00", responseTime: 145, errorRate: 0.1 },
+      { time: "10:00", responseTime: 142, errorRate: 0.1 },
+      { time: "11:00", responseTime: 138, errorRate: 0.1 },
+      { time: "Now",   responseTime: 145, errorRate: 0.1 },
+    ],
+  },
+  failure: {
+    pipeline:  { build: "failed", tests: 52, coverage: 61, uptime: 96.4, responseTime: 1240, errorRate: 8.7 },
+    taskOverrides: [2, 6, 7, 8],
+    perfTrend: [
+      { time: "06:00", responseTime: 145,  errorRate: 0.2 },
+      { time: "07:00", responseTime: 300,  errorRate: 1.5 },
+      { time: "08:00", responseTime: 550,  errorRate: 3.2 },
+      { time: "09:00", responseTime: 890,  errorRate: 5.1 },
+      { time: "10:00", responseTime: 1100, errorRate: 7.2 },
+      { time: "Now",   responseTime: 1240, errorRate: 8.7 },
+    ],
+  },
+};
+
+/* Deep-clone of DB for stateful modifications */
+let appData = JSON.parse(JSON.stringify(DB));
