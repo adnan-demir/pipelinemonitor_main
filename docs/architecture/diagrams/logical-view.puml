@@ -1,0 +1,110 @@
+@startuml logical-view
+' ProjectPulse — Logical View (4+1 Model)
+' Shows layers, packages, and their dependencies.
+
+skinparam backgroundColor #1a1f2e
+skinparam package {
+  BackgroundColor #21262d
+  BorderColor #388bfd
+  FontColor #e6edf3
+  FontSize 12
+}
+skinparam component {
+  BackgroundColor #161b22
+  BorderColor #30363d
+  FontColor #c9d1d9
+}
+skinparam ArrowColor #8b949e
+skinparam NoteBackgroundColor #161b22
+
+title ProjectPulse — Logical View\n(Layered Architecture, Stage 2)
+
+' ══════════════════════════════════
+' FRONTEND TIER
+' ══════════════════════════════════
+package "Frontend Tier (Browser)" #0d1117 {
+
+  package "Presentation Layer" {
+    component "index.html\n(App Shell)" as HTML
+    component "styles.css\n(Design System)" as CSS
+  }
+
+  package "Application Logic Layer" {
+    component "logic.js\n(State · Decision Engine\nRender Orchestrator)" as Logic
+    component "management.js\n(Project Management View)" as Mgmt
+  }
+
+  package "Data & API Layer" {
+    component "data.js\n(Mock Data · Seed DB\nScenario Presets)" as Data
+    component "api.js\n(HTTP Client · Hydration\nMock Fallback)" as API
+    component "localStorage\n(State Persistence)" as LS
+  }
+
+  package "Visualization Layer" {
+    component "charts.js\n(SVG Bar · Donut\nBurnup · Trend)" as Charts
+  }
+}
+
+' ══════════════════════════════════
+' BACKEND TIER
+' ══════════════════════════════════
+package "Backend Tier (Node.js / Express)" #0d1117 {
+
+  package "HTTP Gateway" {
+    component "server.js\n(Express App\nCORS · Static files)" as Server
+  }
+
+  package "Route Handlers (Controller Layer)" {
+    component "routes/tasks.js"    as RTasks
+    component "routes/pipeline.js" as RPipe
+    component "routes/metrics.js"  as RMetrics
+    component "routes/risks.js"    as RRisks
+    component "routes/team.js"     as RTeam
+  }
+
+  package "Data Access Layer" {
+    component "data/db.json\n(Seed / Flat-file Store)" as DB
+  }
+}
+
+' ══════════════════════════════════
+' Dependencies
+' ══════════════════════════════════
+HTML  --> Logic  : loads
+HTML  --> CSS    : styles
+Logic --> Data   : reads / mutates appData
+Logic --> API    : initFromAPI(), patchTask()
+Logic --> Charts : renders analytics
+Logic --> Mgmt   : delegates management view
+Logic --> LS     : saveState / loadState
+API   --> Server : HTTP/REST (fetch)
+
+Server  --> RTasks
+Server  --> RPipe
+Server  --> RMetrics
+Server  --> RRisks
+Server  --> RTeam
+
+RTasks  --> DB
+RPipe   --> DB
+RMetrics--> DB
+RRisks  --> DB
+RTeam   --> DB
+
+note bottom of API
+  **Graceful fallback**
+  If fetch fails or protocol
+  is file://, appData stays
+  populated from data.js.
+end note
+
+note bottom of DB
+  **Assumption**
+  Flat JSON file used as
+  in-memory seed for academic
+  demo. Production would use
+  a real database (PostgreSQL,
+  MongoDB, etc.).
+end note
+
+@enduml

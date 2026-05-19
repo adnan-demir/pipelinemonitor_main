@@ -1,0 +1,92 @@
+@startuml use-case
+' ProjectPulse — Use Case View
+' Render with: plantuml use-case.puml  (or paste into plantuml.com)
+
+skinparam actorStyle awesome
+skinparam backgroundColor #1a1f2e
+skinparam actor {
+  BackgroundColor #388bfd
+  BorderColor #388bfd
+  FontColor #e6edf3
+}
+skinparam usecase {
+  BackgroundColor #21262d
+  BorderColor #388bfd
+  FontColor #e6edf3
+}
+skinparam ArrowColor #8b949e
+skinparam NoteBackgroundColor #161b22
+skinparam NoteFontColor #8b949e
+
+left to right direction
+title ProjectPulse — Use Case Diagram (Stage 2)
+
+' ── Actors ──
+actor "Team Member\n(Any role)" as TM
+actor "Project Manager\n(Ali)" as PM
+actor "Operations Lead\n(Can)"  as OL
+actor "QA / Tester\n(Elif)"     as QA
+actor "Risk Manager\n(Zeynep)"  as RM
+
+' ── System boundary ──
+rectangle "ProjectPulse System" {
+
+  ' Shared use cases
+  usecase "UC-01\nView Dashboard Overview"            as UC01
+  usecase "UC-02\nFilter Tasks\n(Role / Status / Risk)" as UC02
+  usecase "UC-03\nInspect Task Details"               as UC03
+  usecase "UC-04\nMark Task as Done"                  as UC04
+  usecase "UC-05\nView Analytics & Charts"            as UC05
+  usecase "UC-06\nView Stakeholder Register"          as UC06
+
+  ' PM-specific
+  usecase "UC-07\nView Project\nManagement Status"    as UC07
+  usecase "UC-08\nUpdate Deliverable Progress"        as UC08
+  usecase "UC-09\nView Sprint & Budget Status"        as UC09
+
+  ' Ops-specific
+  usecase "UC-10\nView Technical\nMetrics & Logs"     as UC10
+  usecase "UC-11\nSimulate Failure Scenario"          as UC11
+  usecase "UC-12\nSimulate Recovery"                  as UC12
+  usecase "UC-13\nRefresh Live Metrics"               as UC13
+
+  ' QA-specific
+  usecase "UC-14\nView Test Coverage\n& QA Metrics"   as UC14
+
+  ' Risk-specific
+  usecase "UC-15\nView & Manage\nRisk Register"       as UC15
+
+  ' Extends / includes
+  UC04 .> UC01 : <<extends>>
+  UC08 .> UC07 : <<extends>>
+  UC11 .> UC01 : <<extends>>
+  UC12 .> UC01 : <<extends>>
+  UC02 .> UC01 : <<includes>>
+}
+
+' ── Associations ──
+TM --> UC01
+TM --> UC02
+TM --> UC03
+TM --> UC04
+TM --> UC05
+
+PM --> UC01
+PM --> UC06
+PM --> UC07
+PM --> UC08
+PM --> UC09
+
+OL --> UC10
+OL --> UC11
+OL --> UC12
+OL --> UC13
+
+QA --> UC05
+QA --> UC14
+QA --> UC13
+
+RM --> UC15
+RM --> UC06
+
+@enduml

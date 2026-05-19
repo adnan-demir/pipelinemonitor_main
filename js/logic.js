@@ -103,6 +103,7 @@ function markDone(id) {
   task.risk     = "Low";
   task.testPass = 100;
   appData.activities.unshift({ id: Date.now(), time: "Just now", text: `'${task.name}' marked as Done`, type: "success" });
+  patchTask(id, { status: "done", risk: "Low", testPass: 100 }); // sync to backend API
   renderAll();
 }
 
@@ -746,15 +747,19 @@ $("btn-refresh").addEventListener("click", () => {
 });
 
 /* ══ INIT ══ */
-loadState();
+function _boot() {
+  loadState();
+  if (filterRoleEl)   filterRoleEl.value   = state.filterRole;
+  if (filterStatusEl) filterStatusEl.value = state.filterStatus;
+  if (filterRiskEl)   filterRiskEl.value   = state.filterRisk;
+  if (modeSelect)     modeSelect.value     = state.simulationMode || "default";
+  viewTabs.forEach(t => t.classList.toggle("active", t.dataset.view === state.view));
+  renderAll();
+}
 
-/* Sync UI controls with restored state */
-if (filterRoleEl)   filterRoleEl.value   = state.filterRole;
-if (filterStatusEl) filterStatusEl.value = state.filterStatus;
-if (filterRiskEl)   filterRiskEl.value   = state.filterRisk;
-if (modeSelect)     modeSelect.value     = state.simulationMode || "default";
-viewTabs.forEach(t => {
-  t.classList.toggle("active", t.dataset.view === state.view);
-});
-
-renderAll();
+/* Hydrate from backend API when available; otherwise use mock data */
+if (typeof initFromAPI === 'function') {
+  initFromAPI().then(_boot).catch(_boot);
+} else {
+  _boot();
+}

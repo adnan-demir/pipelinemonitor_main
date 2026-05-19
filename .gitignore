@@ -1,0 +1,15 @@
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Environment variables (never commit real secrets)
+.env
+backend/.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+*.swp

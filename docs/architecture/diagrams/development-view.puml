@@ -1,0 +1,163 @@
+@startuml development-view
+' ProjectPulse — Development View (4+1 Model)
+' UML Component Diagram showing module boundaries and interfaces.
+
+skinparam backgroundColor #1a1f2e
+skinparam component {
+  BackgroundColor #21262d
+  BorderColor #388bfd
+  FontColor #e6edf3
+  ArrowColor #8b949e
+}
+skinparam interface {
+  BackgroundColor #161b22
+  BorderColor #8b949e
+  FontColor #8b949e
+}
+skinparam package {
+  BackgroundColor #0d1117
+  BorderColor #30363d
+  FontColor #c9d1d9
+}
+skinparam note {
+  BackgroundColor #161b22
+  BorderColor #388bfd
+  FontColor #8b949e
+}
+skinparam ArrowColor #8b949e
+
+title ProjectPulse — Development View (Component Diagram, Stage 2)
+
+' ══════════════════════
+' FRONTEND MODULE
+' ══════════════════════
+package "frontend/" {
+
+  component "index.html" as HTML {
+    portin  "User Browser" as pBrowser
+    portout "Script loader" as pScripts
+  }
+
+  component "css/styles.css" as CSS {
+    portin "Stylesheet import" as pCSSIn
+  }
+
+  component "js/data.js" as DataJS {
+    portout "appData : Object" as pAppData
+    portout "DB : Object"      as pDB
+    portout "SCENARIOS : Object" as pScen
+  }
+
+  component "js/api.js" as ApiJS {
+    portin  "appData reference" as pApiIn
+    portout "initFromAPI() : Promise" as pInit
+    portout "patchTask()"   as pPatch
+    portout "refreshPipeline()" as pRefresh
+    portout "patchRisk()"   as pPRisk
+  }
+
+  component "js/charts.js" as ChartsJS {
+    portin  "DOM element id" as pChartIn
+    portout "renderBarChart()"    as pBar
+    portout "renderDonutChart()"  as pDonut
+    portout "renderBurnupChart()" as pBurnup
+    portout "renderHorizBars()"   as pHoriz
+    portout "renderTrendChart()"  as pTrend
+    portout "renderRoleMetrics()" as pRole
+  }
+
+  component "js/management.js" as MgmtJS {
+    portin  "appData reference"       as pMgmtIn
+    portout "renderManagement()"      as pRenderMgmt
+    portout "updateMgmtTask()"        as pUpdateMgmt
+  }
+
+  component "js/logic.js" as LogicJS {
+    portin  "All module interfaces"   as pLogicIn
+    portout "markDone()"              as pMarkDone
+    portout "selectTask()"            as pSelect
+    portout "applyScenario()"         as pScenario
+    portout "renderAll()"             as pRenderAll
+  }
+}
+
+' ══════════════════════
+' BACKEND MODULE
+' ══════════════════════
+package "backend/" {
+
+  component "server.js" as Server {
+    portin  "HTTP :3001"          as pHTTP
+    portout "GET  /api/data"      as pData
+    portout "GET  /api/health"    as pHealth
+    portout "Static file server"  as pStatic
+  }
+
+  component "routes/tasks.js" as RTasks {
+    portin  "GET  /api/tasks"      as pGT
+    portin  "GET  /api/tasks/:id"  as pGTid
+    portin  "PATCH /api/tasks/:id" as pPT
+    portout "getTasks() : Task[]"  as pGetT
+  }
+
+  component "routes/pipeline.js" as RPipeline {
+    portin  "GET  /api/pipeline"         as pGP
+    portin  "POST /api/pipeline/refresh" as pPPR
+    portin  "PATCH /api/pipeline"        as pPAP
+    portout "getPipeline() : Pipeline"   as pGetP
+  }
+
+  component "routes/metrics.js" as RMetrics {
+    portin  "GET  /api/metrics"       as pGM
+    portin  "GET  /api/metrics/:role" as pGMR
+    portout "getMetrics() : Metrics"  as pGetM
+  }
+
+  component "routes/risks.js" as RRisks {
+    portin  "GET  /api/risks"      as pGRK
+    portin  "POST /api/risks"      as pPRK
+    portin  "PATCH /api/risks/:id" as pPARK
+    portin  "DELETE /api/risks/:id"as pDRK
+    portout "getRisks() : Risk[]"  as pGetRK
+  }
+
+  component "routes/team.js" as RTeam {
+    portin  "GET /api/team"        as pGTM
+    portout "getTeam() : Member[]" as pGetTM
+  }
+
+  component "data/db.json" as DBJson {
+    portout "seed data : JSON"    as pSeed
+  }
+}
+
+' ══════════════════════
+' Wiring
+' ══════════════════════
+HTML   --> DataJS   : load
+HTML   --> ApiJS    : load
+HTML   --> ChartsJS : load
+HTML   --> MgmtJS   : load
+HTML   --> LogicJS  : load (last)
+
+LogicJS --> DataJS   : reads/mutates appData
+LogicJS --> ApiJS    : initFromAPI() at startup
+LogicJS --> ChartsJS : calls render*()
+LogicJS --> MgmtJS   : calls renderManagement()
+
+ApiJS   ..> Server  : HTTP fetch /api/data\n(optional — graceful fallback)
+Server  --> RTasks
+Server  --> RPipeline
+Server  --> RMetrics
+Server  --> RRisks
+Server  --> RTeam
+
+RTasks   --> DBJson
+RPipeline--> DBJson
+RMetrics --> DBJson
+RRisks   --> DBJson
+RTeam    --> DBJson
+
+pStatic ..> HTML : serves index.html
+
+@enduml

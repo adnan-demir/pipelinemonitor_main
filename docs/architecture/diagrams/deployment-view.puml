@@ -1,0 +1,111 @@
+@startuml deployment-view
+' ProjectPulse — Deployment View (4+1 Model)
+' Shows how software artifacts are distributed across infrastructure.
+
+skinparam backgroundColor #1a1f2e
+skinparam node {
+  BackgroundColor #21262d
+  BorderColor #388bfd
+  FontColor #e6edf3
+}
+skinparam artifact {
+  BackgroundColor #161b22
+  BorderColor #30363d
+  FontColor #c9d1d9
+}
+skinparam database {
+  BackgroundColor #161b22
+  BorderColor #30363d
+  FontColor #c9d1d9
+}
+skinparam component {
+  BackgroundColor #0d1117
+  BorderColor #388bfd
+  FontColor #e6edf3
+}
+skinparam ArrowColor #8b949e
+skinparam cloud {
+  BackgroundColor #21262d
+  BorderColor #388bfd
+}
+
+title ProjectPulse — Deployment View (Stage 2)
+
+' ══════════════════════════════
+' DEVELOPER WORKSTATION
+' ══════════════════════════════
+node "Developer Workstation" as DEV {
+  node "Docker Engine" as DockerDEV {
+    node "projectpulse\nContainer\n(node:20-alpine)" as Container {
+      component "Express.js Server\nPORT 3001" as Express
+      artifact  "frontend/ (static)" as StaticFiles
+      artifact  "backend/ (API)"     as BackendCode
+      database  "backend/data/db.json\n(in-memory seed)" as DevDB
+    }
+  }
+
+  component "Web Browser\n(Chrome / Firefox)" as Browser
+}
+
+' ══════════════════════════════
+' DIRECT FILE ACCESS (no server)
+' ══════════════════════════════
+node "User Machine\n(no server required)" as FILEUSER {
+  component "Web Browser" as FileBrowser
+  artifact  "index.html\n(file:// protocol)" as FileHTML
+}
+
+' ══════════════════════════════
+' PRODUCTION SERVER (optional)
+' ══════════════════════════════
+node "Production Server\n(Cloud VM / VPS)" as PROD {
+  node "Docker Engine" as DockerPROD {
+    node "projectpulse\nContainer" as ProdContainer {
+      component "Express.js Server\nPORT 3001" as ProdExpress
+      database  "db.json\n(persistent volume)" as ProdDB
+    }
+  }
+  component "Reverse Proxy\n(nginx / Caddy)\nPORT 80/443" as Nginx
+}
+
+' ══════════════════════════════
+' CI/CD (GitHub Actions stub)
+' ══════════════════════════════
+cloud "GitHub / CI-CD" as CI {
+  artifact "Docker image\n(built & pushed)" as DockerImage
+}
+
+' ══════════════════════════════
+' Connections
+' ══════════════════════════════
+Browser     --> Express      : HTTP :3001\nGET /index.html\nGET /api/data
+Express     --> StaticFiles  : serves
+Express     --> BackendCode  : routes requests
+BackendCode --> DevDB        : reads/writes (in-memory)
+
+FileBrowser --> FileHTML     : file:// (no backend)\nmock data only
+
+Nginx       --> ProdExpress  : reverse proxy HTTP
+ProdExpress --> ProdDB       : reads/writes
+
+CI          ..> DockerPROD   : docker pull & deploy
+
+note bottom of DevDB
+  **Stage 2 Assumption**
+  db.json is an in-memory
+  seed (reset on restart).
+  Production would mount a
+  persistent volume or use
+  a database service.
+end note
+
+note bottom of FileHTML
+  **Offline mode**
+  Opening index.html directly
+  bypasses the API; api.js
+  detects file:// and skips
+  fetch, falling back to
+  js/data.js mock data.
+end note
+
+@enduml

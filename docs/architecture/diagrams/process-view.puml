@@ -1,0 +1,101 @@
+@startuml process-view
+' ProjectPulse — Process View (4+1 Model)
+' Two key workflows shown as sequence diagrams.
+
+skinparam backgroundColor #1a1f2e
+skinparam sequence {
+  ArrowColor #8b949e
+  ActorBorderColor #388bfd
+  LifeLineBorderColor #30363d
+  LifeLineBackgroundColor #21262d
+  ParticipantBorderColor #388bfd
+  ParticipantBackgroundColor #21262d
+  ParticipantFontColor #e6edf3
+  NoteBackgroundColor #161b22
+  NoteBorderColor #388bfd
+  NoteFontColor #c9d1d9
+}
+skinparam ArrowFontColor #8b949e
+
+title ProjectPulse — Process View (Stage 2)
+
+' ════════════════════════════════════════
+' SEQUENCE 1 — Application Boot / Hydration
+' ════════════════════════════════════════
+== Workflow 1: Application Bootstrap & API Hydration ==
+
+actor User as U
+participant "Browser" as B
+participant "data.js" as D
+participant "api.js" as A
+participant "logic.js" as L
+participant "Express Server\n(/api/data)" as S
+database "db.json" as DB
+
+U  -> B  : Open URL (http://localhost:3001)
+B  -> D  : Parse & execute
+D  -> D  : Initialise appData = deep clone of DB
+B  -> A  : Parse & execute (defines initFromAPI)
+B  -> L  : Parse & execute (defines _boot)
+
+note over L : if typeof initFromAPI === 'function'
+
+L  -> A  : initFromAPI()
+A  -> S  : GET /api/data\n(3 s timeout)
+S  -> DB : Read all collections
+DB --> S : JSON payload
+S  --> A : 200 OK { team, tasks, pipeline, ... }
+A  -> L  : _mergeInto(appData, data)
+
+note over A,L : On network error → catch() → _boot() anyway
+
+L  -> L  : _boot() — loadState() from localStorage
+L  -> L  : syncUIControls(filterRole, filterStatus, ...)
+L  -> B  : renderAll() → DOM update
+
+B  --> U : Dashboard displayed
+
+' ════════════════════════════════════════
+' SEQUENCE 2 — Mark Task as Done
+' ════════════════════════════════════════
+== Workflow 2: Mark Task as Done ==
+
+participant "User\n(Dashboard)" as U2
+participant "logic.js\n(markDone)" as L2
+participant "api.js\n(patchTask)" as A2
+participant "Express\n/api/tasks/:id" as S2
+database "In-memory\ntasks[]" as DB2
+
+U2 -> L2 : click "Mark as Done" (taskId=X)
+L2 -> L2 : mutate appData.tasks[X]\n(status=done, risk=Low, testPass=100)
+L2 -> L2 : unshift activity entry
+L2 -> A2 : patchTask(X, {status:'done',...})
+A2 -> S2 : PATCH /api/tasks/X\n{status, risk, testPass}
+
+note over A2 : fire-and-forget — UI already updated
+
+S2 -> DB2 : tasks[X] = merged fields
+DB2 --> S2 : updated task object
+S2 --> A2 : 200 OK + task JSON
+
+L2 -> L2  : renderAll()
+L2 --> U2 : Task badge turns green
+
+' ════════════════════════════════════════
+' SEQUENCE 3 — Scenario Simulation
+' ════════════════════════════════════════
+== Workflow 3: Simulate Failure Scenario ==
+
+participant "User" as U3
+participant "logic.js\n(applyScenario)" as L3
+
+U3 -> L3 : click "Simulate Failure"
+L3 -> L3 : Object.assign(appData.pipeline, SCENARIOS.failure.pipeline)
+L3 -> L3 : Override delayed task statuses
+L3 -> L3 : Push "Cascading System Failure" risk (if not exists)
+L3 -> L3 : Push failure incident entry
+L3 -> L3 : Update metrics.ops (uptime, responseTime, errorRate)
+L3 -> L3 : renderAll()
+L3 --> U3 : Health banner turns RED\nRelease blocked
+
+@enduml
